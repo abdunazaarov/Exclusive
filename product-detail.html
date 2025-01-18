@@ -9,6 +9,7 @@
 </head>
 <body>
 
+    <!-- Navbar -->
     <nav class="navbar container">
         <div class="navbar__brand">
             <h1>Exclusive</h1>
@@ -31,13 +32,16 @@
         </div>
     </nav>
 
+    <!-- Product Details Section -->
     <div class="product-detail container">
         <h2 class="product-detail__title">Mahsulot Tafsilotlari</h2>
         <div class="product-detail__info" id="product-detail-container">
+            <!-- Product details will be loaded here -->
         </div>
         <a href="./index.html" class="button">Back to Products</a> 
     </div>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer__top">
@@ -102,22 +106,37 @@
     </footer>
 
     <script>
+        // Get the product ID from URL
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
 
-        const fetchProductDetails = async (id) => {
-            const response = await fetch(`https://fakestoreapi.com/products/${id}`);
-            const product = await response.json();
+        if (!productId) {
+            alert('Mahsulot ID si URL da mavjud emas');
+            window.location.href = './index.html'; // If no productId, redirect back to the homepage
+        }
 
-            const productDetailContainer = document.getElementById('product-detail-container');
-            productDetailContainer.innerHTML = `
-                <img src="${product.image}" alt="${product.title}" class="product-detail__image">
-                <h3 class="product-detail__name">${product.title}</h3>
-                <p class="product-detail__price">$${product.price}</p>
-                <p class="product-detail__description">${product.description}</p>
-            `;
+        // Fetch product details based on the productId
+        const fetchProductDetails = async (id) => {
+            try {
+                const response = await fetch(`https://dummyjson.com/products/${id}`);
+                if (!response.ok) throw new Error('Mahsulotni topishda xatolik yuz berdi');
+                const product = await response.json();
+
+                // Display product details on the page
+                const productDetailContainer = document.getElementById('product-detail-container');
+                productDetailContainer.innerHTML = `
+                    <img src="${product.image}" alt="${product.title}" class="product-detail__image">
+                    <h3 class="product-detail__name">${product.title}</h3>
+                    <p class="product-detail__price">$${product.price}</p>
+                    <p class="product-detail__description">${product.description}</p>
+                `;
+            } catch (error) {
+                console.error(error);
+                document.getElementById('product-detail-container').innerHTML = `<p>Mahsulotni topishda xatolik yuz berdi yoki mahsulot mavjud emas.</p>`;
+            }
         };
 
+        // Fetch the product details when the page loads
         fetchProductDetails(productId);
     </script>
 </body>
